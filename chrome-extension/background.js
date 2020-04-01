@@ -1,7 +1,7 @@
 /* global chrome io */
 
-const server = 'https://remote.devtools.rocks/'
-// const server = 'http://localhost:8000/'
+// const server = window.__REMOTE_DEVTOOLS_SERVER__ || 'https://remote.ijser.cn'
+const server = 'http://localhost:8000/';
 
 var debuggee = {}
 var app = {}
@@ -19,7 +19,7 @@ function resetSockets (tab) {
   getDebuggerTarget().then(target => {
     if (target.attached) {
       console.warn('debuggee.already attached')
-      chrome.debugger.detach(debuggee)
+      // chrome.debugger.detach(debuggee)
     }
 
     if (target.url.startsWith('chrome://')) {

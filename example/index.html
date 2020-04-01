@@ -1,16 +1,22 @@
 <html>
-	<style>
-		body {
-			background: #e9f0f8;
-			margin: 0;
-			padding: 0;
-		}
-	</style>
+  <head>
+    <style>
+      body {
+        background: #e9f0f8;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
 
-	<body>
-		<button onclick="window.remoteDebug.getDebugSocket('SAP')">I NEED HELP</button>
-		<br />
-		<img src="sap.jpg"/>
-	</body>
+  <body>
+    <button onclick="window.remoteDebug.getDebugSocket('SAP')">I NEED HELP</button>
+    <br />
+    <img src="./sap.jpg"/>
+
+  <script>
+    window.__REMOTE_DEVTOOLS_SERVER__ = 'http://localhost:8000'
+  </script>
+  </body>
 
 </html>

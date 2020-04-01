@@ -1,7 +1,7 @@
 var express = require('express')
 var http = require('http')
+var path = require('path')
 var WebSocketServer = require('ws').Server
-var Mixpanel = require('mixpanel')
 
 var logger = require('./logger')
 var uuid = require('node-uuid')
@@ -10,7 +10,6 @@ var request = require('request')
 var targets = {}
 var sockets = {}
 var sessions = {}
-var mixpanel = Mixpanel.init(process.env.MIXPANEL_TOKEN)
 
 logger.info('server.booting')
 
@@ -80,17 +79,6 @@ io.sockets.on('connection', function (socket) {
     var endTime = new Date().getTime()
     var duration = endTime - session.startTime
 
-    mixpanel.track('session_ended', {
-      sessionId: sessionId,
-      endTime: endTime,
-      startTime: session.startTime,
-      duration: duration
-    })
-
-    mixpanel.track('sessions_duration', {
-      sessionId: sessionId
-    })
-
     delete targets[sessionId]
     delete sockets[sessionId]
     delete sessions[sessionId]
@@ -108,16 +96,13 @@ io.sockets.on('connection', function (socket) {
     targets[sessionId].push({
       description: '',
       devtoolsFrontendUrl: '/devtools/devtools.html?ws=' + webSocketUrl,
-      devtoolsUrl: 'chrome-devtools://devtools/remote/serve_rev/@8925c3c45f3923bc78ffc841842183cc592a0143/inspector.html?wss=' + webSocketUrl + '&remoteFrontend=true&dockSide=unlocked&experiments=true',
+// devtoolsUrl: 'chrome-devtools://devtools/remote/serve_rev/@8925c3c45f3923bc78ffc841842183cc592a0143/inspector.html?ws=' + webSocketUrl + '&remoteFrontend=true&dockSide=unlocked&experiments=true',
+      devtoolsUrl: 'chrome-devtools://devtools/bundled/devtools_app.html?ws=' + webSocketUrl + '&remoteFrontend=true&experiments=true&can_dock=true&dockSide=undocked',
       id: uuid(),
       title: data.title,
       type: 'page',
       url: data.url,
       webSocketDebuggerUrl: 'ws://' + webSocketUrl
-    })
-
-    mixpanel.track('sessions_created', {
-      sessionId: sessionId
     })
 
     socket.emit('sessionCreated', sessionId)
@@ -183,7 +168,9 @@ ws.on('connection', function (connection) {
     var message;
     try {
       message = JSON.parse(data);
-    } catch (e) { }
+    } catch (e) { 
+      console.error(e)
+    }
 
     if (!message) return;
     socket.emit('data.request', message)
